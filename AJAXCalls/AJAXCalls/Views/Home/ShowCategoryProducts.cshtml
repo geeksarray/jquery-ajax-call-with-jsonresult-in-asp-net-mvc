@@ -1,0 +1,120 @@
+﻿@{
+    ViewBag.Title = "jQuery Ajax Call example in ASP.NET MVC - dotnetmentors.com";
+}
+
+<h1>
+    jQuery Ajax Call example in ASP.NET MVC
+    - dotnetmentors.com
+</h1>
+@using (Html.BeginForm("CategoryChosen", "Home",
+                FormMethod.Get))
+{
+    <table cellspacing="2" cellpadding="2">
+        <tr>
+            <td>
+                Category Type :
+            </td>
+            <td>
+                @Html.DropDownList("CategoryType")
+            </td>
+        </tr>
+    </table>
+
+    <br />
+    
+    <div>
+        <table id="tblProducts" class="tblProducts">
+            <thead>
+                <tr>
+                    <th align="left" class="productth">ProductID</th>
+                    <th align="left" class="productth">ProductName</th>
+                    <th align="left" class="productth">QuantityPerUnit</th>
+                    <th align="left" class="productth">UnitPrice</th>
+                    <th align="left" class="productth">UnitsInStock</th>
+                    <th align="left" class="productth">ReorderLevel</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <div>
+        <p>
+            <a href="https://www.facebook.com/dotnetmentors"><img src="~/facebook1.png" /></a>
+        </p>
+    </div>
+
+    <style type="text/css">
+        .tblProducts {
+            font-family: verdana,arial,sans-serif;
+            font-size: 11px;
+            color: #333333;
+            border-width: 1px;
+            border-color: #666666;
+            border-collapse: collapse;
+        }
+
+        .productth {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #dedede;
+        }
+
+        .prtoducttd {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #ffffff;
+        }
+    </style>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $("#CategoryType").change(function () {
+
+                $("#tblProducts tbody tr").remove();
+
+                $.ajax({
+
+                    type: 'POST',
+
+                    url: '@Url.Action("GetProducts")', 
+                dataType: 'json',
+                data: { id: $("#CategoryType").val() },
+                success: function (data) {
+                    var items = '';
+                    $.each(data, function (i, item) {
+                        
+                        var rows = "<tr>"
+                        + "<td class='prtoducttd'>" + item.ProductID + "</td>"
+                        + "<td class='prtoducttd'>" + item.ProductName + "</td>"
+                        + "<td class='prtoducttd'>" + item.QuantityPerUnit + "</td>"
+                        + "<td class='prtoducttd'>" + item.UnitPrice + "</td>"
+                        + "<td class='prtoducttd'>" + item.UnitsInStock + "</td>"
+                        + "<td class='prtoducttd'>" + item.ReorderLevel + "</td>"
+                        + "</tr>";
+                        $('#tblProducts tbody').append(rows);
+                    });
+
+                },
+                error: function (ex) {
+                    var r = jQuery.parseJSON(response.responseText);
+                    alert("Message: " + r.Message);
+                    alert("StackTrace: " + r.StackTrace);
+                    alert("ExceptionType: " + r.ExceptionType);
+                }
+            });
+            return false;
+        })
+        });
+
+    </script>
+
+
+
+}
